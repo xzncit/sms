@@ -67,9 +67,9 @@ class Tencent {
         try{
             $client                 = new SmsClient($this->client, "ap-guangzhou");
             $req                    = new SendSmsRequest();
-            $req->SmsSdkAppId       = $this->appid; // 应用 ID 可前往 短信控制台->应用管理->应用列表
-            $req->SignName          = $params["singName"]; // 短信签名
-            $req->TemplateId        = $params["templateCode"]; // 模板 ID
+            $req->SmsSdkAppId       = (string)$this->appid; // 应用 ID 可前往 短信控制台->应用管理->应用列表
+            $req->SignName          = (string)$params["singName"]; // 短信签名
+            $req->TemplateId        = (string)$params["templateCode"]; // 模板 ID
             $req->TemplateParamSet  = $params["templateParam"]; // 模板参数: 模板参数的个数需要与 TemplateId 对应模板的变量个数保持一致，若无模板参数，则设置为空
             $req->PhoneNumberSet    = ["+86" . $params["mobile"]]; // 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
             $req->SessionContext    = ""; // 用户的 session 内容（无需要可忽略）: 可以携带用户侧 ID 等上下文信息，server 会原样返回
@@ -104,12 +104,14 @@ class Tencent {
                 }
             }
              */
-//            $result = $response->getSendStatusSet();
-//            foreach($result as $value){
-//                if($value["Code"] == "Ok"){
-//
-//                }
-//            }
+            $result = $response->getSendStatusSet();
+            foreach($result as $value){
+                if($value->Code == "LimitExceeded.PhoneNumberDailyLimit"){
+                    throw new \Exception("当前手机号发送短信已达上限",0);
+                }else if($value->Code == "Ok"){
+                    return true;
+                }
+            }
 
             return true;
         }catch (\Exception $ex){
