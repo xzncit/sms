@@ -108,8 +108,8 @@ class Tencent {
             foreach($result as $value){
                 if($value->Code == "LimitExceeded.PhoneNumberDailyLimit"){
                     throw new \Exception("当前手机号发送短信已达上限",0);
-                }else if($value->Code == "Ok"){
-                    return true;
+                }else if($value->Code != "Ok"){
+                    throw new \Exception(Error::getMessage($value->Code),0);
                 }
             }
 
