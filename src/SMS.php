@@ -24,7 +24,7 @@ class SMS {
      * Current version of program
      * @var string
      */
-    public static $version = "1.2.0";
+    public static $version = "1.2.1";
 
     /**
      * @param $name
